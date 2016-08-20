@@ -237,7 +237,7 @@ def completionPage() {
 		}
 
 		section("Notifications") {
-			input("recipients", "contact", title: "Send notifications to") {
+			input("recipients", "contact", title: "Send notifications to", required: false) {
 				input(name: "completionPhoneNumber", type: "phone", title: "Text This Number", description: "Phone number", required: false)
 				input(name: "completionPush", type: "bool", title: "Send A Push Notification", description: "Phone number", required: false)
 			}
@@ -720,7 +720,7 @@ def completionPercentage() {
 
 	def now = new Date().getTime()
 	def timeElapsed = now - atomicState.start
-	def totalRunTime = totalRunTimeMillis()
+	def totalRunTime = totalRunTimeMillis() ?: 1
 	def percentComplete = timeElapsed / totalRunTime * 100
 	log.debug "percentComplete: ${percentComplete}"
 
