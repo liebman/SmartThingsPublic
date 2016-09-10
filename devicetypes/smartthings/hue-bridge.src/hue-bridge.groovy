@@ -28,8 +28,8 @@ metadata {
 			}
 			}
 		valueTile("doNotRemove", "v", decoration: "flat", height: 2, width: 6, inactiveLabel: false) {
-			state "default", label:'Do not remove'
-        }
+			state "default", label:'If removed, Hue lights will not work properly'
+		}
 		valueTile("idNumber", "device.idNumber", decoration: "flat", height: 2, width: 6, inactiveLabel: false) {
 			state "default", label:'ID: ${currentValue}'
 		}
@@ -38,7 +38,7 @@ metadata {
 		}
 
 		main (["rich-control"])
-		details(["rich-control", "idNumber", "networkAddress", "doNotRemove"])
+		details(["rich-control", "doNotRemove", "idNumber", "networkAddress"])
 	}
 }
 
@@ -62,7 +62,7 @@ def parse(description) {
 			log.trace "HUE BRIDGE, GENERATING EVENT: $map.name: $map.value"
 			results << createEvent(name: "${map.name}", value: "${map.value}")
 		} else {
-        	log.trace "Parsing description"
+			log.trace "Parsing description"
 			def msg = parseLanMessage(description)
 			if (msg.body) {
 				def contentType = msg.headers["Content-Type"]
@@ -72,13 +72,13 @@ def parse(description) {
 						log.info "Bridge response: $msg.body"
 					} else {
 						// Sending Bulbs List to parent"
-                        if (parent.state.inBulbDiscovery)
-                        	log.info parent.bulbListHandler(device.hub.id, msg.body)
+						if (parent.isInBulbDiscovery())
+							log.info parent.bulbListHandler(device.hub.id, msg.body)
 					}
 				}
 				else if (contentType?.contains("xml")) {
 					log.debug "HUE BRIDGE ALREADY PRESENT"
-                    parent.hubVerification(device.hub.id, msg.body)
+					parent.hubVerification(device.hub.id, msg.body)
 				}
 			}
 		}
